@@ -7,9 +7,6 @@ import (
 	"strings"
 )
 
-// type StructRest struct {
-// 	Leafs map[string]StructNode
-// }
 type StructNode struct {
 	Name string
 	Type string
@@ -22,13 +19,13 @@ type StructNode struct {
 // 		panic(err)
 // 	}
 // 	paths := m.LeafPaths()
-// 	RootName, StructLines, LeafStructs := Path2SrtructLines(paths)
-// 	return FormatStruct(RootName, StructLines, LeafStructs), err
+// 	RootName, RootStruct, RestStructs := Path2SrtructLines(paths)
+// 	return FormatStruct(RootName, RootStruct, RestStructs), err
 // }
 
 func Path2SrtructLines(paths []string) (string, map[string]StructNode, map[string]map[string]StructNode) {
 	var RootName string
-	StructLines := make(map[string]StructNode)
+	RootStruct := make(map[string]StructNode)
 	RestStructs := make(map[string]map[string]StructNode)
 
 	RootName = strings.Split(paths[0], ".")[0]
@@ -38,24 +35,24 @@ func Path2SrtructLines(paths []string) (string, map[string]StructNode, map[strin
 		path = removeNum.ReplaceAllString(path, "[]")
 		Flods := strings.Count(path, "[")
 		path = strings.Replace(path, "[]", "", -1)
-		splitPath := strings.Split(path, ".")
-		last := splitPath[len(splitPath)-1]
+		splitedPath := strings.Split(path, ".")
+		last := splitedPath[len(splitedPath)-1]
 		if strings.Index(last, "-") == 0 { //Attr
-			if RootName == splitPath[len(splitPath)-2] { //RootAttr
+			if RootName == splitedPath[len(splitedPath)-2] { //RootAttr
 				NodeName := strings.Title(last[1:])
 				xmlRoute := "`xml:" + `"` + last[1:] + `,attr"` + "`"
 				StructLineAppend := StructNode{Name: NodeName, Type: "string", Path: xmlRoute}
-				StructLines[xmlRoute] = StructLineAppend
+				RootStruct[xmlRoute] = StructLineAppend
 			} else { //NoneRootAttr
-				NodeName := strings.Title(splitPath[len(splitPath)-2])
-				xmlRoute := strings.Join(splitPath[1:len(splitPath)-1], ">")
+				NodeName := strings.Title(splitedPath[len(splitedPath)-2])
+				xmlRoute := strings.Join(splitedPath[1:len(splitedPath)-1], ">")
 				xmlPath := "`xml:" + `"` + xmlRoute + `"` + "`"
 				Stype := "[]" + NodeName
 				for i := 0; i < Flods; i++ {
 					Stype = "[]" + Stype
 				}
 				StructLineAppend := StructNode{Name: NodeName, Type: Stype, Path: xmlPath}
-				StructLines[xmlRoute] = StructLineAppend
+				RootStruct[xmlRoute] = StructLineAppend
 
 				LeafName := strings.Title(last[1:])
 				RsetStructLineAppend := StructNode{Name: LeafName, Type: "string", Path: "`xml:" + `"` + last[1:] + `,attr"` + "`"}
@@ -71,21 +68,21 @@ func Path2SrtructLines(paths []string) (string, map[string]StructNode, map[strin
 
 			}
 		} else if strings.Index(last, "#") == 0 { //chardata
-			if RootName == splitPath[len(splitPath)-2] { //RootChartata
+			if RootName == splitedPath[len(splitedPath)-2] { //RootChartata
 				NodeName := strings.Title(last[1:])
 				xmlRoute := "`xml:" + `",chardata"` + "`"
 				StructLineAppend := StructNode{Name: NodeName, Type: "string", Path: xmlRoute}
-				StructLines[xmlRoute] = StructLineAppend
+				RootStruct[xmlRoute] = StructLineAppend
 			} else { //NonRootChardata
-				NodeName := strings.Title(splitPath[len(splitPath)-2])
-				xmlRoute := strings.Join(splitPath[1:len(splitPath)-1], ">")
+				NodeName := strings.Title(splitedPath[len(splitedPath)-2])
+				xmlRoute := strings.Join(splitedPath[1:len(splitedPath)-1], ">")
 				xmlPath := "`xml:" + `"` + xmlRoute + `"` + "`"
 				Stype := "[]" + NodeName
 				for i := 0; i < Flods; i++ {
 					Stype = "[]" + Stype
 				}
 				StructLineAppend := StructNode{Name: NodeName, Type: Stype, Path: xmlPath}
-				StructLines[xmlRoute] = StructLineAppend
+				RootStruct[xmlRoute] = StructLineAppend
 
 				LeafName := strings.Title(last[1:])
 				RsetStructLineAppend := StructNode{Name: LeafName, Type: "string", Path: "`xml:" + `",chardata"` + "`"}
@@ -99,16 +96,33 @@ func Path2SrtructLines(paths []string) (string, map[string]StructNode, map[strin
 				}
 			}
 		} else {
-			NodeName := strings.Title(splitPath[len(splitPath)-1])
-			xmlRoute := strings.Join(splitPath[1:], ">")
+			NodeName := strings.Title(splitedPath[len(splitedPath)-1])
+			xmlRoute := strings.Join(splitedPath[1:], ">")
 			xmlPath := "`xml:" + `"` + xmlRoute + `"` + "`"
 			Stype := "[]" + "string"
 			for i := 0; i < Flods; i++ {
 				Stype = "[]" + Stype
 			}
 			StructLineAppend := StructNode{Name: NodeName, Type: Stype, Path: xmlPath}
-			StructLines[xmlRoute] = StructLineAppend
+			RootStruct[xmlRoute] = StructLineAppend
 		}
 	}
-	return RootName, StructLines, RestStructs
+	return strings.Title(RootName), RootStruct, RestStructs
+}
+
+func RootDatas2Struct(RootName string, RootLines map[string]StructNode, RestStructs map[string]map[string]StructNode) string {
+	Structs := "type " + RootName + " struct{\n"
+	for _, v := range RootLines {
+		Structs += "\t" + v.Name + "\t" + v.Type + "\t" + v.Path + "\n"
+	}
+	Structs += "}\n\n"
+
+	for NodeName, v1 := range RestStructs {
+		Structs += "type " + NodeName + " struct{\n"
+		for _, v2 := range v1 {
+			Structs += "\t" + v2.Name + "\t" + v2.Type + "\t" + v2.Path + "\n"
+		}
+		Structs += "}\n"
+	}
+	return Structs
 }
