@@ -1,7 +1,7 @@
 package xj2s
 
 import (
-	// "github.com/clbanning/mxj"
+	"github.com/clbanning/mxj"
 	// "fmt"
 	"regexp"
 	"strings"
@@ -13,15 +13,15 @@ type StructNode struct {
 	Path string
 }
 
-// func Xml2Struct(xdata []byte) (string, error) {
-// 	m, err := mxj.NewMapXml(xdata)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	paths := m.LeafPaths()
-// 	RootName, RootStruct, RestStructs := Path2SrtructLines(paths)
-// 	return FormatStruct(RootName, RootStruct, RestStructs), err
-// }
+func Xml2Struct(xdata []byte) string {
+	m, err := mxj.NewMapXml(xdata)
+	if err != nil {
+		panic(err)
+	}
+	paths := m.LeafPaths()
+	RootName, RootStruct, RestStructs := Path2SrtructLines(paths)
+	return RootXmlDatas2Struct(RootName, RootStruct, RestStructs)
+}
 
 func Path2SrtructLines(paths []string) (string, map[string]StructNode, map[string]map[string]StructNode) {
 	var RootName string
