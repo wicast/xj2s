@@ -1,6 +1,11 @@
-# XJ2S: A small tool for Golang to generate Golang struct form a xml/json file
+# XJ2S: A small tool for Golang to generate Golang struct from a xml/json file
 
 The generated struct can be used for a `Unmarshal()` function from a `encoding/xml` or `encoding/json` package
+
+###### Notice:
+This tool is for xml/json data parsing,not for modifing xml/json data struct.
+
+If you want to modify a xml/json data,My recommandation is to use `github.com/clbanning/mxj` package,`xj2s`is using this package for backend.
 
 ### Installation
 you should setup your $GOPATH properely  
