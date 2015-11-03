@@ -21,7 +21,6 @@ func usage() {
 func main() {
 	ParseType := flag.String("t", "xml", "Type for parse\n\tavaliable type:xml,json")
 	FileName := flag.String("f", "", "Parse from a file given a name")
-	Stdin := flag.Bool("stdin", false, "Parse from stdin")
 	flag.Parse()
 	if *FileName != "" {
 		f, err := ioutil.ReadFile(*FileName)
@@ -30,18 +29,6 @@ func main() {
 		}
 		if *ParseType == "xml" {
 			fmt.Println(parseXml(f))
-		} else if *ParseType == "json" {
-			fmt.Println("Not implemented yet...")
-		} else {
-			usage()
-		}
-	} else if *Stdin == true {
-		bytes, err := ioutil.ReadAll(os.Stdin)
-		if err != nil {
-			panic(err)
-		}
-		if *ParseType == "xml" {
-			fmt.Println(parseXml(bytes))
 		} else if *ParseType == "json" {
 			fmt.Println("Not implemented yet...")
 		} else {
@@ -60,6 +47,19 @@ func main() {
 			usage()
 		}
 
+	} else if stat, _ := os.Stdin.Stat(); (stat.Mode() & os.ModeCharDevice) == 0 {
+
+		bytes, err := ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			panic(err)
+		}
+		if *ParseType == "xml" {
+			fmt.Println(parseXml(bytes))
+		} else if *ParseType == "json" {
+			fmt.Println("Not implemented yet...")
+		} else {
+			usage()
+		}
 	} else {
 		usage()
 	}
