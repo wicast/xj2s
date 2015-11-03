@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func Path2SrtructLines(paths []string) (string, map[string]StructNode, map[string]map[string]StructNode) {
+func XmlPath2SrtructLinesNoNesting(paths []string) (string, map[string]StructNode, map[string]map[string]StructNode) {
 	var RootName string
 	RootStruct := make(map[string]StructNode)
 	RestStructs := make(map[string]map[string]StructNode)
@@ -141,21 +141,4 @@ func Path2SrtructLines(paths []string) (string, map[string]StructNode, map[strin
 		}
 	}
 	return strings.Title(RootName), RootStruct, RestStructs
-}
-
-func RootXmlDatas2Struct(RootName string, RootLines map[string]StructNode, RestStructs map[string]map[string]StructNode) string {
-	Structs := "type " + RootName + " struct {\n"
-	for _, v := range RootLines {
-		Structs += "\t" + v.Name + "\t" + v.Type + "\t" + v.Path + "\n"
-	}
-	Structs += "}\n\n"
-
-	for NodeName, v1 := range RestStructs {
-		Structs += "type " + NodeName + " struct {\n"
-		for _, v2 := range v1 {
-			Structs += "\t" + v2.Name + "\t" + v2.Type + "\t" + v2.Path + "\n"
-		}
-		Structs += "}\n"
-	}
-	return Structs
 }

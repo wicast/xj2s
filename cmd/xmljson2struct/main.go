@@ -8,10 +8,6 @@ import (
 	"os"
 )
 
-func parseXml(s []byte) string {
-	return xj2s.Xml2Struct(s)
-}
-
 func usage() {
 	fmt.Println("Usage: " + os.Args[0] + " [-flags] [file]")
 	fmt.Println("Flags:")
@@ -21,16 +17,18 @@ func usage() {
 func main() {
 	ParseType := flag.String("t", "xml", "Type for parse\n\tavaliable type:xml,json")
 	FileName := flag.String("f", "", "Parse from a file given a name")
+	JsonRootName := flag.String("root", "JsonRoot", "For struct root name when using json,Default is JsonRoot")
+	Nesting := flag.Bool("n", false, "Generate structs whit nesting style\n\tnotice:json haven't implement the > style yet,so only nesting style is working for json")
 	flag.Parse()
 	if *FileName != "" {
-		f, err := ioutil.ReadFile(*FileName)
+		bytes, err := ioutil.ReadFile(*FileName)
 		if err != nil {
 			panic(err)
 		}
 		if *ParseType == "xml" {
-			fmt.Println(parseXml(f))
+			fmt.Println(xj2s.Xml2Struct(bytes, *Nesting))
 		} else if *ParseType == "json" {
-			fmt.Println("Not implemented yet...")
+			fmt.Println(xj2s.Json2Struct(bytes, *JsonRootName, *Nesting))
 		} else {
 			usage()
 		}
@@ -40,9 +38,9 @@ func main() {
 			panic(err)
 		}
 		if *ParseType == "xml" {
-			fmt.Println(parseXml(bytes))
+			fmt.Println(xj2s.Xml2Struct(bytes, *Nesting))
 		} else if *ParseType == "json" {
-			fmt.Println("Not implemented yet...")
+			fmt.Println(xj2s.Json2Struct(bytes, *JsonRootName, *Nesting))
 		} else {
 			usage()
 		}
@@ -54,9 +52,9 @@ func main() {
 			panic(err)
 		}
 		if *ParseType == "xml" {
-			fmt.Println(parseXml(bytes))
+			fmt.Println(xj2s.Xml2Struct(bytes, *Nesting))
 		} else if *ParseType == "json" {
-			fmt.Println("Not implemented yet...")
+			fmt.Println(xj2s.Json2Struct(bytes, *JsonRootName, *Nesting))
 		} else {
 			usage()
 		}
