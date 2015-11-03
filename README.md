@@ -18,8 +18,6 @@ And a executable called `xmljson2struct` will be appear in your $GOPATH/bin dire
 Usage: xmljson2struct [-flags] [file]
   -f string
     	Parse from a file given a name
-  -stdin
-    	Parse from stdin
   -t string
     	Type to parses
 	avaliable type:xml,json (default "xml")
@@ -27,7 +25,7 @@ Usage: xmljson2struct [-flags] [file]
 
 ### XML Parsing Example
 ```
-$ curl -s https://github.com/timeline|xmljson2struct -stdin
+$ curl -s https://github.com/timeline|xmljson2struct 
 type Feed struct {
 	TitleEntry	[]Title	`xml:"entry>title"`
 	Email	[]string	`xml:"entry>author>email"`
