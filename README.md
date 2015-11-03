@@ -16,10 +16,15 @@ And a executable called `xmljson2struct` will be appear in your $GOPATH/bin dire
 ### Usage
 ```
 Usage: xmljson2struct [-flags] [file]
+Flags:
   -f string
     	Parse from a file given a name
+  -n	Generate structs whit nesting style
+	notice:json haven't implement the > style yet,so only nesting style is working for json
+  -root string
+    	For struct root name when using json,Default is JsonRoot (default "JsonRoot")
   -t string
-    	Type to parses
+    	Type to parse
 	avaliable type:xml,json (default "xml")
 ```
 
@@ -73,3 +78,6 @@ type Thumbnail struct {
 
 The programe will use as less struct as possible,no nesting struct.The first entry is the Root struct.In the Root struct,every field present a useful node in xml.  
 The rest struct is used for those having attributes.
+
+### JSON Parsing Example
+TODO

@@ -15,7 +15,7 @@ func usage() {
 }
 
 func main() {
-	ParseType := flag.String("t", "xml", "Type for parse\n\tavaliable type:xml,json")
+	ParseType := flag.String("t", "xml", "Type to parse\n\tavaliable type:xml,json")
 	FileName := flag.String("f", "", "Parse from a file given a name")
 	JsonRootName := flag.String("root", "JsonRoot", "For struct root name when using json,Default is JsonRoot")
 	Nesting := flag.Bool("n", false, "Generate structs whit nesting style\n\tnotice:json haven't implement the > style yet,so only nesting style is working for json")
