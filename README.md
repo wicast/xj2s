@@ -80,4 +80,10 @@ The programe will use as less struct as possible,no nesting struct.The first ent
 The rest struct is used for those having attributes.
 
 ### JSON Parsing Example
-TODO
+Not implemented yet.
+
+
+## TODO
+- [ ] XML conflict issue.
+- [ ] JSON/XML nesting style.
+- [ ] Rust support?
