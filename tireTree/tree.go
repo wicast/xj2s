@@ -13,23 +13,24 @@ type TrieTreeNode struct {
 }
 
 type PathName struct {
-	Name   string
-	IsFlod bool
+	Name string
+	// IsFlod bool
 }
 
 type TreePath []PathName
 
-func NewPaths(pathS string) ([]PathName, error) {
+func NewPaths(pathS string, spliter string) (TreePath, error) {
 	removeNum := regexp.MustCompile(`\[(\d+)\]`)
 	pathS = removeNum.ReplaceAllString(pathS, "[]")
-	splitedPath := strings.Split(pathS, ".")
-	var pN []PathName
+	splitedPath := strings.Split(pathS, spliter)
+	var pN TreePath
 	for _, Node := range splitedPath {
-		IsFlod := false
-		if strings.Contains(Node, "[]") {
-			IsFlod = true
-		}
-		pN = append(pN, PathName{Name: Node, IsFlod: IsFlod})
+		// IsFlod := false
+		// if strings.Contains(Node, "[]") {
+		// 	IsFlod = true
+		// }
+		// pN = append(pN, PathName{Name: Node, IsFlod: IsFlod})
+		pN = append(pN, PathName{Name: Node})
 	}
 	return pN, nil
 }
