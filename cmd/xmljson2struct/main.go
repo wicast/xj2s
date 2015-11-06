@@ -6,6 +6,7 @@ import (
 	"github.com/wicast/xj2s"
 	"io/ioutil"
 	"os"
+	"runtime"
 )
 
 func usage() {
@@ -45,18 +46,20 @@ func main() {
 			usage()
 		}
 
-	} else if stat, _ := os.Stdin.Stat(); (stat.Mode() & os.ModeCharDevice) == 0 {
+	} else if runtime.GOOS != "windows" {
+		if stat, _ := os.Stdin.Stat(); (stat.Mode() & os.ModeCharDevice) == 0 {
 
-		bytes, err := ioutil.ReadAll(os.Stdin)
-		if err != nil {
-			panic(err)
-		}
-		if *ParseType == "xml" {
-			fmt.Println(xj2s.Xml2Struct(bytes, *Nesting))
-		} else if *ParseType == "json" {
-			fmt.Println(xj2s.Json2Struct(bytes, *JsonRootName, *Nesting))
-		} else {
-			usage()
+			bytes, err := ioutil.ReadAll(os.Stdin)
+			if err != nil {
+				panic(err)
+			}
+			if *ParseType == "xml" {
+				fmt.Println(xj2s.Xml2Struct(bytes, *Nesting))
+			} else if *ParseType == "json" {
+				fmt.Println(xj2s.Json2Struct(bytes, *JsonRootName, *Nesting))
+			} else {
+				usage()
+			}
 		}
 	} else {
 		usage()
