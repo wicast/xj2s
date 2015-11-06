@@ -84,6 +84,6 @@ Not implemented yet.
 
 
 ## TODO
-- [ ] XML conflict issue.
+- [ ] XML conflict issue [#2](https://github.com/wicast/xj2s/issues/2).
 - [ ] JSON/XML nesting style.
 - [ ] Rust support?
