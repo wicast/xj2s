@@ -1,6 +1,7 @@
 package tireTree
 
 import (
+	"errors"
 	"regexp"
 	"strings"
 )
@@ -35,6 +36,12 @@ func NewPaths(pathS string, spliter string) (TreePath, error) {
 	return pN, nil
 }
 
+func NewNode(NodeName PathName, Value interface{}) TrieTreeNode {
+	return TrieTreeNode{NodeName: NodeName,
+		Children: make(map[PathName]*TrieTreeNode),
+		Value:    Value}
+}
+
 func (TT *TrieTreeNode) InsertNode(path TreePath, value interface{}) {
 	if Next, exist := TT.Children[path[0]]; !exist {
 		if len(path) == 1 {
@@ -57,4 +64,13 @@ func (TT *TrieTreeNode) insertSingleNode(name PathName) *TrieTreeNode {
 	TT.Children[name] = NewRouteNode
 	NewRouteNode.Parent = TT
 	return NewRouteNode
+}
+
+func (TT *TrieTreeNode) deleteSingleNode(nodename PathName) (*TrieTreeNode, error) {
+	if Dying, exist := TT.Children[nodename]; exist {
+		delete(TT.Children, nodename)
+		return Dying, nil
+	} else {
+		return nil, errors.New("No such node.")
+	}
 }
