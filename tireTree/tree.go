@@ -66,6 +66,18 @@ func (TT *TrieTreeNode) insertSingleNode(name PathName) *TrieTreeNode {
 	return NewRouteNode
 }
 
+func (TT *TrieTreeNode) DeleteNode(nodePath TreePath) (*TrieTreeNode, error) {
+	if Next, exist := TT.Children[nodePath[0]]; exist {
+		if len(nodePath) == 1 {
+			DyingNode, err := TT.deleteSingleNode(nodePath[0])
+			return DyingNode, err
+		} else {
+			return Next.DeleteNode(nodePath[1:])
+		}
+	}
+	return nil, errors.New("No such route.")
+}
+
 func (TT *TrieTreeNode) deleteSingleNode(nodename PathName) (*TrieTreeNode, error) {
 	if Dying, exist := TT.Children[nodename]; exist {
 		delete(TT.Children, nodename)
