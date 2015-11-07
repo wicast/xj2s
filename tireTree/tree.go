@@ -10,7 +10,6 @@ type TrieTreeNode struct {
 	NodeName PathName
 	Parent   *TrieTreeNode
 	Children map[PathName]*TrieTreeNode
-	Value    interface{}
 }
 
 type PathName struct {
@@ -36,24 +35,24 @@ func NewPaths(pathS string, spliter string) (TreePath, error) {
 	return pN, nil
 }
 
-func NewNode(NodeName PathName, Value interface{}) TrieTreeNode {
-	return TrieTreeNode{NodeName: NodeName,
-		Children: make(map[PathName]*TrieTreeNode),
-		Value:    Value}
+func NewNode(NodeName PathName) TrieTreeNode {
+	return TrieTreeNode{NodeName: NodeName, Children: make(map[PathName]*TrieTreeNode)}
 }
 
-func (TT *TrieTreeNode) InsertNode(path TreePath, value interface{}) {
+func (TT *TrieTreeNode) InsertNode(path TreePath) (*TrieTreeNode, error) {
 	if Next, exist := TT.Children[path[0]]; !exist {
 		if len(path) == 1 {
 			ALeafNode := TT.insertSingleNode(path[0])
-			ALeafNode.Value = value
+			return ALeafNode, nil
 		} else {
 			NewRouteNode := TT.insertSingleNode(path[0])
-			NewRouteNode.InsertNode(path[1:], value)
+			return NewRouteNode.InsertNode(path[1:])
 		}
 	} else {
 		if len(path) != 1 {
-			Next.InsertNode(path[1:], value)
+			return Next.InsertNode(path[1:])
+		} else {
+			return nil, errors.New("Insert Node Failed.")
 		}
 	}
 
