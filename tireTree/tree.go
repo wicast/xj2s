@@ -9,6 +9,7 @@ type TrieTreeNode struct {
 	NodeName PathName
 	Parent   *TrieTreeNode
 	Children map[PathName]*TrieTreeNode
+	Value    interface{}
 }
 
 type PathName struct {
@@ -30,18 +31,18 @@ func NewNode(NodeName PathName) TrieTreeNode {
 	return TrieTreeNode{NodeName: NodeName, Children: make(map[PathName]*TrieTreeNode)}
 }
 
-func (TT *TrieTreeNode) InsertNode(path TreePath) (*TrieTreeNode, error) {
+func (TT *TrieTreeNode) InsertNode(path TreePath, value interface{}) (*TrieTreeNode, error) {
 	if Next, exist := TT.Children[path[0]]; !exist {
 		if len(path) == 1 {
-			ALeafNode := TT.insertSingleNode(path[0])
+			ALeafNode := TT.insertSingleNode(path[0], value)
 			return ALeafNode, nil
 		} else {
-			NewRouteNode := TT.insertSingleNode(path[0])
-			return NewRouteNode.InsertNode(path[1:])
+			NewRouteNode := TT.insertSingleNode(path[0], value)
+			return NewRouteNode.InsertNode(path[1:], value)
 		}
 	} else {
 		if len(path) != 1 {
-			return Next.InsertNode(path[1:])
+			return Next.InsertNode(path[1:], value)
 		} else {
 			return nil, errors.New("Insert Node Failed.")
 		}
@@ -49,8 +50,8 @@ func (TT *TrieTreeNode) InsertNode(path TreePath) (*TrieTreeNode, error) {
 
 }
 
-func (TT *TrieTreeNode) insertSingleNode(name PathName) *TrieTreeNode {
-	NewRouteNode := &TrieTreeNode{NodeName: name, Children: make(map[PathName]*TrieTreeNode)}
+func (TT *TrieTreeNode) insertSingleNode(name PathName, value interface{}) *TrieTreeNode {
+	NewRouteNode := &TrieTreeNode{NodeName: name, Children: make(map[PathName]*TrieTreeNode), Value: value}
 	TT.Children[name] = NewRouteNode
 	NewRouteNode.Parent = TT
 	return NewRouteNode
