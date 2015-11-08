@@ -37,7 +37,7 @@ func (TT *TrieTreeNode) InsertNode(path TreePath, value interface{}) (*TrieTreeN
 			ALeafNode := TT.insertSingleNode(path[0], value)
 			return ALeafNode, nil
 		} else {
-			NewRouteNode := TT.insertSingleNode(path[0], value)
+			NewRouteNode := TT.insertSingleNode(path[0], nil)
 			NewRouteNode.Name = path[0]
 			return NewRouteNode.InsertNode(path[1:], value)
 		}
@@ -92,6 +92,10 @@ func (TT *TrieTreeNode) SetSingleNodeValue(name NodeName, value interface{}) err
 	t, err := TT.GetSingleNode(name)
 	t.Value = value
 	return err
+}
+
+func (TT *TrieTreeNode) SetSelfValue(value interface{}) {
+	TT.Value = value
 }
 
 func (TT *TrieTreeNode) DeleteNode(nodePath TreePath) (*TrieTreeNode, error) {
