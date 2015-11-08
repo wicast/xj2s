@@ -69,6 +69,30 @@ func (TT *TrieTreeNode) GetNode(path TreePath) (*TrieTreeNode, error) {
 	}
 }
 
+func (TT *TrieTreeNode) GetSingleNode(path PathName) (*TrieTreeNode, error) {
+	if Next, exist := TT.Children[path]; exist {
+		return Next, nil
+	} else {
+		return nil, errors.New("No such node")
+	}
+}
+
+func (TT *TrieTreeNode) GetNodeValue() interface{} {
+	return TT.Value
+}
+
+func (TT *TrieTreeNode) SetNodeValue(path TreePath, value interface{}) error {
+	t, err := TT.GetNode(path)
+	t.Value = value
+	return err
+}
+
+func (TT *TrieTreeNode) SetSingleNodeValue(name PathName, value interface{}) error {
+	t, err := TT.GetSingleNode(name)
+	t.Value = value
+	return err
+}
+
 func (TT *TrieTreeNode) DeleteNode(nodePath TreePath) (*TrieTreeNode, error) {
 	if Next, exist := TT.Children[nodePath[0]]; exist {
 		if len(nodePath) == 1 {
