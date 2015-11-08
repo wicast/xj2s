@@ -6,29 +6,29 @@ import (
 )
 
 type TrieTreeNode struct {
-	NodeName PathName
+	Name     NodeName
 	Parent   *TrieTreeNode
-	Children map[PathName]*TrieTreeNode
+	Children map[NodeName]*TrieTreeNode
 	Value    interface{}
 }
 
-type PathName struct {
+type NodeName struct {
 	Name string
 }
 
-type TreePath []PathName
+type TreePath []NodeName
 
 func NewPaths(pathS string, spliter string) (TreePath, error) {
 	splitedPath := strings.Split(pathS, spliter)
 	var pN TreePath
 	for _, Node := range splitedPath {
-		pN = append(pN, PathName{Name: Node})
+		pN = append(pN, NodeName{Name: Node})
 	}
 	return pN, nil
 }
 
-func NewNode(NodeName PathName) TrieTreeNode {
-	return TrieTreeNode{NodeName: NodeName, Children: make(map[PathName]*TrieTreeNode)}
+func NewNode(Name NodeName) TrieTreeNode {
+	return TrieTreeNode{Name: Name, Children: make(map[NodeName]*TrieTreeNode)}
 }
 
 func (TT *TrieTreeNode) InsertNode(path TreePath, value interface{}) (*TrieTreeNode, error) {
@@ -38,6 +38,7 @@ func (TT *TrieTreeNode) InsertNode(path TreePath, value interface{}) (*TrieTreeN
 			return ALeafNode, nil
 		} else {
 			NewRouteNode := TT.insertSingleNode(path[0], value)
+			NewRouteNode.Name = path[0]
 			return NewRouteNode.InsertNode(path[1:], value)
 		}
 	} else {
@@ -50,8 +51,8 @@ func (TT *TrieTreeNode) InsertNode(path TreePath, value interface{}) (*TrieTreeN
 
 }
 
-func (TT *TrieTreeNode) insertSingleNode(name PathName, value interface{}) *TrieTreeNode {
-	NewRouteNode := &TrieTreeNode{NodeName: name, Children: make(map[PathName]*TrieTreeNode), Value: value}
+func (TT *TrieTreeNode) insertSingleNode(name NodeName, value interface{}) *TrieTreeNode {
+	NewRouteNode := &TrieTreeNode{Name: name, Children: make(map[NodeName]*TrieTreeNode), Value: value}
 	TT.Children[name] = NewRouteNode
 	NewRouteNode.Parent = TT
 	return NewRouteNode
@@ -69,7 +70,7 @@ func (TT *TrieTreeNode) GetNode(path TreePath) (*TrieTreeNode, error) {
 	}
 }
 
-func (TT *TrieTreeNode) GetSingleNode(path PathName) (*TrieTreeNode, error) {
+func (TT *TrieTreeNode) GetSingleNode(path NodeName) (*TrieTreeNode, error) {
 	if Next, exist := TT.Children[path]; exist {
 		return Next, nil
 	} else {
@@ -87,7 +88,7 @@ func (TT *TrieTreeNode) SetNodeValue(path TreePath, value interface{}) error {
 	return err
 }
 
-func (TT *TrieTreeNode) SetSingleNodeValue(name PathName, value interface{}) error {
+func (TT *TrieTreeNode) SetSingleNodeValue(name NodeName, value interface{}) error {
 	t, err := TT.GetSingleNode(name)
 	t.Value = value
 	return err
@@ -105,7 +106,7 @@ func (TT *TrieTreeNode) DeleteNode(nodePath TreePath) (*TrieTreeNode, error) {
 	return nil, errors.New("No such route.")
 }
 
-func (TT *TrieTreeNode) DeleteSingleNode(nodename PathName) (*TrieTreeNode, error) {
+func (TT *TrieTreeNode) DeleteSingleNode(nodename NodeName) (*TrieTreeNode, error) {
 	if Dying, exist := TT.Children[nodename]; exist {
 		delete(TT.Children, nodename)
 		return Dying, nil
