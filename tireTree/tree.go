@@ -12,9 +12,7 @@ type TrieTreeNode struct {
 	Value    interface{}
 }
 
-type NodeName struct {
-	Name string
-}
+type NodeName string
 
 type TreePath []NodeName
 
@@ -22,10 +20,14 @@ func NewPaths(pathS string, spliter string) (TreePath, error) {
 	splitedPath := strings.Split(pathS, spliter)
 	var pN TreePath
 	for _, Node := range splitedPath {
-		pN = append(pN, NodeName{Name: Node})
+		pN = append(pN, NodeName(Node))
 	}
 	return pN, nil
 }
+
+// func JoinNodeName(Names ...NodeName,spliter string)NodeName{
+//
+// }
 
 func NewNode(Name NodeName) TrieTreeNode {
 	return TrieTreeNode{Name: Name, Children: make(map[NodeName]*TrieTreeNode)}
