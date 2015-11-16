@@ -20,15 +20,15 @@ func NewXMLNodeData() XmlNodeData {
 }
 
 func NewPath(s string) (tireTree.TreePath, error) {
-	s = CleanPath(s)
+	s = cleanPath(s)
 	return tireTree.NewPaths(s, ".")
 }
 
-func NewXMLTree(name tireTree.NodeName) tireTree.TrieTreeNode {
-	return tireTree.NewNode(name)
+func NewXMLTree(name string) tireTree.TrieTreeNode {
+	return tireTree.NewNode(tireTree.NodeName(name))
 }
 
-func CleanPath(path string) string {
+func cleanPath(path string) string {
 	removeNum := regexp.MustCompile(`\[(\d+)\]`)
 	return removeNum.ReplaceAllString(path, "[]")
 }
