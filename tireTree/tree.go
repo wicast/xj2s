@@ -25,9 +25,14 @@ func NewPaths(pathS string, spliter string) (TreePath, error) {
 	return pN, nil
 }
 
-// func JoinNodeName(Names ...NodeName,spliter string)NodeName{
-//
-// }
+func JoinNodeName(spliter string, Names ...NodeName) NodeName {
+	var a string
+	for _, v := range Names[:len(Names)-1] {
+		a += string(v) + spliter
+	}
+	a += string(Names[len(Names)-1])
+	return NodeName(a)
+}
 
 func NewNode(Name NodeName) TrieTreeNode {
 	return TrieTreeNode{Name: Name, Children: make(map[NodeName]*TrieTreeNode)}
