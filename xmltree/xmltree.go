@@ -33,7 +33,8 @@ func cleanPath(path string) string {
 	return removeNum.ReplaceAllString(path, "[]")
 }
 
-func InsertXML(tree *tireTree.TrieTreeNode,
+func InsertXML(
+	tree *tireTree.TrieTreeNode,
 	path tireTree.TreePath,
 	value XmlNodeData) (*tireTree.TrieTreeNode, error) {
 	ALeafNode, err := tree.InsertNode(path, value)
