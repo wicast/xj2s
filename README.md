@@ -20,7 +20,7 @@ Flags:
   -f string
     	Parse from a file given a name
   -n	Generate structs whit nesting style
-	notice:json haven't implement the > style yet,so only nesting style is working for json
+	notice:xml haven't implement the > style yet, so nesting style is working only for json
   -root string
     	For struct root name when using json,Default is JsonRoot (default "JsonRoot")
   -t string
